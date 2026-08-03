@@ -382,17 +382,11 @@ def load_model(
 
     source = model_cache_dir or resolve_model_source(model_name, artifact_root)
     device = get_device()
-    try:
-        model = SentenceTransformer(
-            source,
-            device=device,
-            model_kwargs={"use_safetensors": False},
-        )
-    except OSError:
-        model = SentenceTransformer(
-            source,
-            device=device,
-        )
+    model = SentenceTransformer(
+        source,
+        device=device,
+        model_kwargs={"use_safetensors": False},
+    )
     _model_cache[cache_key] = model
     return model
 
