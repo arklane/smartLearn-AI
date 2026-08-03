@@ -1,11 +1,13 @@
 import { useState } from "react"
-import { uploadPDF, askQuestion } from "./api"
+import { uploadPDF } from "./api"
+import PdfPreview from "./PdfPreview"
+import ChatPanel from "./ChatPanel"
 
 function App() {
   const [file, setFile] = useState(null)
   const [upload, setUpload] = useState(null)
-  const [message, setMessage] = useState("")
-  const [answer, setAnswer] = useState(null)
+  const [activePage, setActivePage] = useState(1)
+  const [uploadKey, setUploadKey] = useState(0)
   const [status, setStatus] = useState("idle")
   const [error, setError] = useState("")
 
@@ -15,9 +17,10 @@ function App() {
     try {
       setStatus("uploading")
       setError("")
-      setAnswer(null)
       const result = await uploadPDF(file)
       setUpload(result)
+      setActivePage(1)
+      setUploadKey((key) => key + 1)
     } catch (err) {
       setError(err.message || "Upload failed.")
     } finally {
@@ -25,19 +28,8 @@ function App() {
     }
   }
 
-  async function handleAsk(event) {
-    event.preventDefault()
-    if (!message.trim()) return
-    try {
-      setStatus("asking")
-      setError("")
-      const result = await askQuestion(message.trim())
-      setAnswer(result)
-    } catch (err) {
-      setError(err.message || "Chat failed.")
-    } finally {
-      setStatus("idle")
-    }
+  function handleJumpToPage(page) {
+    setActivePage(page)
   }
 
   return (
@@ -71,42 +63,21 @@ function App() {
       {/* ---- 错误显示 ---- */}
       {error && <p className="error" role="alert">{error}</p>}
 
-      {/* ---- 提问区域 ---- */}
-      <div className="card">
-        <form onSubmit={handleAsk}>
-          <label htmlFor="message">Message</label>
-          <textarea
-            id="message"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder={upload ? "Ask a question about the PDF…" : "Upload a PDF first"}
-          />
-          <button
-            type="submit"
-            disabled={!upload || !message.trim() || status !== "idle"}
-          >
-            {status === "asking" ? "Asking…" : "Ask"}
-          </button>
-          {status === "asking" && <span className="status-text">Waiting for answer…</span>}
-        </form>
+      {/* ---- 工作区: 左预览 + 右对话 ---- */}
+      <div className="workspace">
+        <PdfPreview
+          upload={upload}
+          activePage={activePage}
+          previewKey={uploadKey}
+        />
+        <ChatPanel
+          key={uploadKey}
+          enabled={!!upload}
+          onBusy={(busy) => setStatus(busy ? "asking" : "idle")}
+          disabled={status === "uploading"}
+          onJumpToPage={handleJumpToPage}
+        />
       </div>
-
-      {/* ---- 答案显示 ---- */}
-      {answer && (
-        <section className="answer-section">
-          <h2>Answer</h2>
-          <p className="answer-text">{answer.answer}</p>
-          {answer.citations && answer.citations.length > 0 && (
-            <div className="citations">
-              {answer.citations.map((page) => (
-                <span key={page} className="chip">
-                  Page {page}
-                </span>
-              ))}
-            </div>
-          )}
-        </section>
-      )}
     </main>
   )
 }

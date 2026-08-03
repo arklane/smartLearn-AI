@@ -25,3 +25,7 @@ export async function askQuestion(message) {
   })
   return readJSON(response)
 }
+
+export function getDocumentFileURL(page = 1) {
+  return `${API}/documents/${encodeURIComponent(CHAT_ID)}/file#page=${page}`
+}

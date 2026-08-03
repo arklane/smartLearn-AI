@@ -179,3 +179,128 @@ button:disabled {
   color: #6b7280;
   font-weight: 500;
 }
+
+/* ---- Workspace: PDF preview (left) + chat (right) ---- */
+.workspace {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: stretch;
+}
+
+/* ---- PDF preview panel ---- */
+.preview-panel {
+  background: #fff;
+  border: 1px solid #dbe3ee;
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  min-height: 560px;
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+  color: #334155;
+}
+
+.preview-filename {
+  font-weight: 600;
+}
+
+.preview-page-label {
+  background: #e0e7ef;
+  padding: 2px 12px;
+  border-radius: 999px;
+  font-weight: 500;
+}
+
+.preview-frame {
+  flex: 1;
+  width: 100%;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  min-height: 500px;
+}
+
+.preview-placeholder {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  font-size: 0.95rem;
+}
+
+/* ---- Chat panel ---- */
+.chat-panel {
+  background: #fff;
+  border: 1px solid #dbe3ee;
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  min-height: 560px;
+}
+
+.message-list {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 12px;
+  padding-right: 4px;
+}
+
+.message-placeholder {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  margin-top: 8px;
+}
+
+.message {
+  margin-bottom: 12px;
+}
+
+.message-user .message-content {
+  background: #eff6ff;
+  border-radius: 12px;
+  padding: 10px 14px;
+  color: #1e3a8a;
+}
+
+.message-assistant .message-content {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 10px 14px;
+  color: #172033;
+  white-space: pre-wrap;
+}
+
+.message-content {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.citation-chip {
+  border: none;
+  padding: 4px 14px;
+  cursor: pointer;
+}
+
+.chat-form {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 12px;
+}
+
+.chat-form button {
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+}
