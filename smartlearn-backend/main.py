@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 
 load_dotenv()
 
-from .services import rag
+from services import rag
 
 app = FastAPI(title="SmartLearn Lite API")
 
