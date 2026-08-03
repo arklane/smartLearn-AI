@@ -1,11 +1,15 @@
 import os
 
+from dotenv import load_dotenv
+
 from fastapi import FastAPI, UploadFile, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
-from services import rag
+load_dotenv()
+
+from .services import rag
 
 app = FastAPI(title="SmartLearn Lite API")
 
