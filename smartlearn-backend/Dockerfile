@@ -12,22 +12,19 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# Pre-download the MiniLM model into the folder rag.py resolves first.
-# This avoids downloading from HuggingFace at request time on Railway.
+# Pre-download the MiniLM model files into the folder rag.py resolves first.
+# snapshot_download pulls the full repo (pytorch_model.bin + model.safetensors),
+# so load_model works regardless of which weight format it prefers.
 RUN python - <<'EOF'
-from pathlib import Path
+from huggingface_hub import snapshot_download
 
-from sentence_transformers import SentenceTransformer
-
-model_dir = Path("/app/artifacts/rag/hf_models/all-MiniLM-L6-v2")
-model_dir.mkdir(parents=True, exist_ok=True)
-model = SentenceTransformer(
-    "sentence-transformers/all-MiniLM-L6-v2",
-    device="cpu",
-    model_kwargs={"use_safetensors": False},
+model_dir = "/app/artifacts/rag/hf_models/all-MiniLM-L6-v2"
+snapshot_download(
+    repo_id="sentence-transformers/all-MiniLM-L6-v2",
+    local_dir=model_dir,
+    local_dir_use_symlinks=False,
 )
-model.save(str(model_dir))
-print("MiniLM model saved to:", model_dir)
+print("MiniLM model downloaded to:", model_dir)
 EOF
 
 CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"]
