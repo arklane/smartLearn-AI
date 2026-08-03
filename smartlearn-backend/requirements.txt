@@ -9,3 +9,6 @@ faiss-cpu
 pandas
 numpy
 langchain-text-splitters
+chromadb
+sqlalchemy
+psycopg[binary]
